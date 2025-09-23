@@ -6,10 +6,8 @@ import glob
 import os
 
 def read_csv_fix_cp1252(path, **kwargs):
-    # 1) Lectura “lossless” con latin1
     df = pd.read_csv(path, encoding="latin1", dtype=str, keep_default_na=False, **kwargs)
 
-    # 2) Mapa de controles latin1 -> glifos cp1252 (incluye €)
     cp1252_map = str.maketrans({
         '\x80':'€', '\x82':'‚', '\x83':'ƒ', '\x84':'„', '\x85':'…',
         '\x86':'†', '\x87':'‡', '\x88':'ˆ', '\x89':'‰', '\x8A':'Š',
@@ -19,7 +17,6 @@ def read_csv_fix_cp1252(path, **kwargs):
         '\x9B':'›', '\x9C':'œ', '\x9E':'ž', '\x9F':'Ÿ'
     })
 
-    # aplica a todas las columnas string
     for col in df.columns:
         df[col] = df[col].str.translate(cp1252_map)
 
@@ -46,7 +43,7 @@ mercadona=concat_csv('/home/ale/Supermarket_Project','mercadona*')
 print(mercadona.shape)
 
 carrefour = read_csv_fix_cp1252("/home/ale/Supermarket_Project/carrefour.csv", header=None)   # ajusta sep si hace falta
-# ... tu limpieza ...
+
 carrefour.to_csv("/home/ale/Supermarket_Project/carrefour_utf8.csv", index=False, encoding="utf-8")
 carrefour=pd.read_csv('/home/ale/Supermarket_Project/carrefour_utf8.csv')
 pd.set_option('display.max_columns', None)
@@ -54,7 +51,7 @@ pd.set_option('display.max_columns', None)
 server = 'localhost,1433'   # o la IP de tu contenedor si es externa
 database = 'Supermarkets'
 username = 'sa'
-password = 'Aleja_23'
+password = 'XXXX'
 
 engine = create_engine(
     f"mssql+pyodbc://sa:{password}@localhost:1433/{database}?driver=ODBC+Driver+17+for+SQL+Server"
